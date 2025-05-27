@@ -1,2 +1,3 @@
-# KeepOrYeet
-Mobile app tinder style to get rid of your old and unwanted photos rotting on your gallery.
+# Keep or Yeet 🥊
+
+Mobile app tinder style to clean up your gallery. Get rid of all of that waste rotting at the bottom of your storage!
