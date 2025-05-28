@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "KeepOrYeet",
-    "slug": "KeepOrYeet",
+    "slug": "keeporyeet",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,14 +9,28 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Allow KeepOrYeet to access your photos.",
+        "NSPhotoLibraryAddUsageDescription": "Allow KeepOrYeet to save photos."
+      },
+      "bundleIdentifier": "com.miguelr0drigues.keeporyeet"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_MEDIA_IMAGES",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_MEDIA_LOCATION"
+      ],
+      "package": "com.miguelr0drigues.keeporyeet"
     },
     "web": {
       "bundler": "metro",
@@ -33,10 +47,26 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow KeepOrYeet to access your photos.",
+          "savePhotosPermission": "Allow KeepOrYeet to save photos.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "2b58c1bc-061c-4b5d-80fc-05ad11156df8"
+      }
+    },
+    "owner": "miguelr0drigues"
   }
 }

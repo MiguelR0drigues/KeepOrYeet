@@ -13,27 +13,41 @@ export function ThemedText({
   lightColor,
   darkColor,
   type = 'default',
-  ...rest
+  ...props
 }: ThemedTextProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
+
+  const typeStyle = {
+    default: styles.default,
+    title: styles.title,
+    defaultSemiBold: styles.defaultSemiBold,
+    subtitle: styles.subtitle,
+    link: styles.link,
+  }
+
+  // Check if the style prop contains fontWeight: 'bold'
+  const isBold = StyleSheet.flatten(style)?.fontWeight === 'bold';
 
   return (
     <Text
       style={[
         { color },
-        type === 'default' ? styles.default : undefined,
-        type === 'title' ? styles.title : undefined,
-        type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
-        type === 'subtitle' ? styles.subtitle : undefined,
-        type === 'link' ? styles.link : undefined,
+        typeStyle[type] || undefined,
         style,
-      ]}
-      {...rest}
+        isBold ? styles.boldFontFamily : styles.fontFamily,
+      ]}  
+      {...props}
     />
   );
 }
 
 const styles = StyleSheet.create({
+  fontFamily: {
+    fontFamily: 'Montserrat_400Regular',
+  },
+  boldFontFamily: {
+    fontFamily: 'Montserrat_700Bold',
+  },
   default: {
     fontSize: 16,
     lineHeight: 24,
