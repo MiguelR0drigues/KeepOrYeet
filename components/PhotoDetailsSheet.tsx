@@ -1,4 +1,6 @@
 import { BOTTOM_SHEET_HEIGHT, SCREEN_HEIGHT, VERTICAL_DRAG_THRESHOLD } from '@/constants/Generic';
+import { useTheme } from '@/hooks/useTheme';
+import { palette } from '@/theme/colors';
 import { BlurView } from 'expo-blur';
 import { MediaTypeValue } from 'expo-media-library';
 import React, { useEffect } from 'react';
@@ -26,6 +28,7 @@ export const PhotoDetailsSheet: React.FC<PhotoDetailsSheetProps> = ({
   show,
   photo,
 }) => {
+  const { colors } = useTheme();
   const translateY = React.useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const [visible, setVisible] = React.useState(show);
   const closeTimeout = React.useRef<number | null>(null);
@@ -116,26 +119,28 @@ export const PhotoDetailsSheet: React.FC<PhotoDetailsSheetProps> = ({
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
   };
 
+  const handleClose = () => {
+    Animated.spring(translateY, {
+      toValue: SCREEN_HEIGHT,
+      useNativeDriver: true,
+      damping: 20,
+      stiffness: 90,
+    }).start();
+    if (closeTimeout.current) clearTimeout(closeTimeout.current);
+    closeTimeout.current = setTimeout(() => {
+      setVisible(false);
+      onClose();
+    }, 300);
+  };
+
   return (
     <>
       {visible && (
-        <TouchableWithoutFeedback onPress={() => {
-          Animated.spring(translateY, {
-            toValue: SCREEN_HEIGHT,
-            useNativeDriver: true,
-            damping: 20,
-            stiffness: 90,
-          }).start();
-          if (closeTimeout.current) clearTimeout(closeTimeout.current);
-          closeTimeout.current = setTimeout(() => {
-            setVisible(false);
-            onClose();
-          }, 300);
-        }}>
+        <TouchableWithoutFeedback onPress={handleClose}>
           <View style={styles.overlay} />
         </TouchableWithoutFeedback>
       )}
-      <Animated.View 
+      <Animated.View
         style={[
           styles.container,
           {
@@ -144,23 +149,27 @@ export const PhotoDetailsSheet: React.FC<PhotoDetailsSheetProps> = ({
         ]}
         {...panResponder.panHandlers}
       >
-        <BlurView intensity={30} style={styles.blurView}>
+        <BlurView style={styles.blurView} intensity={20}>
           <View style={styles.handle} />
           <View style={styles.content}>
             <View style={styles.section}>
               <ThemedText style={styles.sectionTitle}>Details</ThemedText>
               <View style={styles.detailRow}>
                 <ThemedText style={styles.detailLabel}>Type</ThemedText>
-                <ThemedText style={styles.detailValue}>{photo.mediaType}</ThemedText>
+                <ThemedText style={styles.detailValue}>{photo?.mediaType}</ThemedText>
               </View>
               <View style={styles.detailRow}>
                 <ThemedText style={styles.detailLabel}>Dimensions</ThemedText>
-                <ThemedText style={styles.detailValue}>{formatDimensions(photo.width, photo.height)}</ThemedText>
+                <ThemedText style={styles.detailValue}>
+                  {photo && formatDimensions(photo.width, photo.height)}
+                </ThemedText>
               </View>
-              {photo.mediaType === 'video' && (
+              {photo?.mediaType === 'video' && (
                 <View style={styles.detailRow}>
                   <ThemedText style={styles.detailLabel}>Duration</ThemedText>
-                  <ThemedText style={styles.detailValue}>{formatDuration(photo.duration)}</ThemedText>
+                  <ThemedText style={styles.detailValue}>
+                    {formatDuration(photo.duration)}
+                  </ThemedText>
                 </View>
               )}
             </View>
@@ -169,15 +178,19 @@ export const PhotoDetailsSheet: React.FC<PhotoDetailsSheetProps> = ({
               <ThemedText style={styles.sectionTitle}>File</ThemedText>
               <View style={styles.detailRow}>
                 <ThemedText style={styles.detailLabel}>Name</ThemedText>
-                <ThemedText style={styles.detailValue}>{photo.filename}</ThemedText>
+                <ThemedText style={styles.detailValue}>{photo?.filename}</ThemedText>
               </View>
               <View style={styles.detailRow}>
                 <ThemedText style={styles.detailLabel}>Created</ThemedText>
-                <ThemedText style={styles.detailValue}>{formatDate(photo.creationTime)}</ThemedText>
+                <ThemedText style={styles.detailValue}>
+                  {photo && formatDate(photo.creationTime)}
+                </ThemedText>
               </View>
               <View style={styles.detailRow}>
                 <ThemedText style={styles.detailLabel}>Modified</ThemedText>
-                <ThemedText style={styles.detailValue}>{formatDate(photo.modificationTime)}</ThemedText>
+                <ThemedText style={styles.detailValue}>
+                  {photo && formatDate(photo.modificationTime)}
+                </ThemedText>
               </View>
             </View>
           </View>
@@ -190,7 +203,7 @@ export const PhotoDetailsSheet: React.FC<PhotoDetailsSheetProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: palette.overlay.dark,
   },
   container: {
     position: 'absolute',
@@ -203,7 +216,7 @@ const styles = StyleSheet.create({
   },
   blurView: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: palette.overlay.dark,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: 'hidden',
@@ -211,7 +224,7 @@ const styles = StyleSheet.create({
   handle: {
     width: 40,
     height: 4,
-    backgroundColor: '#fff',
+    backgroundColor: palette.white,
     borderRadius: 2,
     alignSelf: 'center',
     marginTop: 8,
@@ -227,7 +240,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#fff',
+    color: palette.text.primary,
     marginBottom: 12,
   },
   detailRow: {
@@ -235,15 +248,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    borderBottomColor: palette.text.muted,
   },
   detailLabel: {
     fontSize: 16,
-    color: 'rgba(255, 255, 255, 0.7)',
+    color: palette.text.secondary,
   },
   detailValue: {
     fontSize: 16,
-    color: '#fff',
+    color: palette.text.primary,
     fontWeight: '500',
   },
 }); 

@@ -1,4 +1,7 @@
 import { MAX_HORIZONTAL_DRAG_DISTANCE, MAX_ROTATION, SCREEN_WIDTH, SWIPE_THRESHOLD, VERTICAL_SWIPE_THRESHOLD } from '@/constants/Generic';
+import { useTheme } from '@/hooks/useTheme';
+import { borders, palette } from '@/theme/colors';
+import { SwipeableCardHandle } from '@/types/ui';
 import { Image } from 'expo-image';
 import React, { forwardRef, useEffect, useImperativeHandle } from 'react';
 import { StyleSheet } from 'react-native';
@@ -13,12 +16,6 @@ import Animated, {
   withSpring
 } from 'react-native-reanimated';
 
-export interface PhotoCardHandle {
-  swipeLeft: () => void;
-  swipeRight: () => void;
-  swipeUp: () => void;
-}
-
 interface PhotoCardProps {
   uri: string;
   onSwipeLeft: () => void;
@@ -31,8 +28,9 @@ type ContextType = {
   startY: number;
 };
 
-export const PhotoCard = forwardRef<PhotoCardHandle, PhotoCardProps>(
+export const PhotoCard = forwardRef<SwipeableCardHandle, PhotoCardProps>(
   ({ uri, onSwipeLeft, onSwipeRight, onSwipeUp }, ref) => {
+    const { colors, shadows, borders } = useTheme();
     const translateX = useSharedValue(0);
     const translateY = useSharedValue(0);
     const rotation = useSharedValue(0);
@@ -231,7 +229,7 @@ export const PhotoCard = forwardRef<PhotoCardHandle, PhotoCardProps>(
 
     return (
       <PanGestureHandler onGestureEvent={gestureHandler}>
-        <Animated.View style={[styles.card, cardStyle]}>
+        <Animated.View style={[styles.card, shadows.card, { borderColor: colors.primary }, cardStyle]}>
           <Image
             source={{ uri }}
             style={styles.image}
@@ -239,10 +237,10 @@ export const PhotoCard = forwardRef<PhotoCardHandle, PhotoCardProps>(
             transition={100}
           />
           <Animated.View style={[styles.overlay, styles.keepOverlay, keepStyle]}>
-            <Animated.Text style={[styles.text, styles.keepText]}>KEEP</Animated.Text>
+            <Animated.Text style={[styles.text, { color: colors.keep, borderColor: colors.keep }]}>KEEP</Animated.Text>
           </Animated.View>
           <Animated.View style={[styles.overlay, styles.yeetOverlay, yeetStyle]}>
-            <Animated.Text style={[styles.text, styles.yeetText]}>YEET</Animated.Text>
+            <Animated.Text style={[styles.text, { color: colors.yeet, borderColor: colors.yeet }]}>YEET</Animated.Text>
           </Animated.View>
         </Animated.View>
       </PanGestureHandler>
@@ -260,18 +258,9 @@ const styles = StyleSheet.create({
     height: SCREEN_WIDTH * 1.8,
     borderRadius: 20,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
     borderWidth: 1,
     padding: 5,
     backgroundColor: 'transparent',
-    borderColor: 'rgb(54, 0, 108)',
   },
   image: {
     width: '100%',
@@ -297,20 +286,11 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 40,
     textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowColor: palette.overlay.shadow,
     textShadowOffset: { width: 1, height: 1 },
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    backgroundColor: palette.overlay.light,
     textShadowRadius: 3,
-    borderWidth: 3,
-    borderRadius: 20,
+    ...borders.action,
     padding: 10,
-  },
-  keepText: {
-    color: '#4CAF50',
-    borderColor: '#4CAF50',
-  },
-  yeetText: {
-    color: '#F44336',
-    borderColor: '#F44336',
   },
 }); 

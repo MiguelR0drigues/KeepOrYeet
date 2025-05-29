@@ -11,15 +11,17 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "Allow KeepOrYeet to access your photos.",
-        "NSPhotoLibraryAddUsageDescription": "Allow KeepOrYeet to save photos."
+        "NSPhotoLibraryUsageDescription": "We need access to your photos to help you organize them",
+        "NSPhotoLibraryAddUsageDescription": "We need access to your photos to help you organize them",
+        "PHPhotoLibraryPreventAutomaticLimitedAccessAlert": false,
+        "PHPhotoLibraryAccessLevel": "readWrite"
       },
       "bundleIdentifier": "com.miguelr0drigues.keeporyeet"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
       "permissions": [
@@ -51,8 +53,8 @@
       [
         "expo-media-library",
         {
-          "photosPermission": "Allow KeepOrYeet to access your photos.",
-          "savePhotosPermission": "Allow KeepOrYeet to save photos.",
+          "photosPermission": "We need access to your photos to help you organize them.",
+          "savePhotosPermission": "We need access to save photos to your gallery.",
           "isAccessMediaLocationEnabled": true
         }
       ],

@@ -47,16 +47,22 @@
     </dict>
     <key>NSCameraUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your camera</string>
+    <key>NSFaceIDUsageDescription</key>
+    <string>Allow $(PRODUCT_NAME) to access your Face ID biometric data.</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your microphone</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
-    <string>Allow KeepOrYeet to save photos.</string>
+    <string>We need access to save photos to your gallery.</string>
     <key>NSPhotoLibraryUsageDescription</key>
-    <string>Allow KeepOrYeet to access your photos.</string>
+    <string>We need access to your photos to help you organize them.</string>
     <key>NSUserActivityTypes</key>
     <array>
       <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
     </array>
+    <key>PHPhotoLibraryAccessLevel</key>
+    <string>readWrite</string>
+    <key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
+    <false/>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
