@@ -2,6 +2,7 @@ import { Background } from '@/components/Background';
 import { ThemedText } from '@/components/ThemedText';
 import { TopBar } from '@/components/TopBar';
 import { useTheme } from '@/hooks/useTheme';
+import { useLoadingStore } from '@/store/loading';
 import { usePhotosStore } from '@/store/photos';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
@@ -16,7 +17,8 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const PHOTO_SIZE = (SCREEN_WIDTH - (NUM_COLUMNS + 1) * SPACING) / NUM_COLUMNS;
 
 export default function YeetedScreen() {
-  const { yeetedPhotos, isLoading, loadYeetedPhotos, restorePhoto, deletePhotos } = usePhotosStore();
+  const { yeetedPhotos, loadYeetedPhotos, restorePhoto, deletePhotos } = usePhotosStore();
+  const { isVisible: isLoading } = useLoadingStore();
   const [photosToKeep, setPhotosToKeep] = useState<Set<string>>(new Set());
   const { colors } = useTheme();
 
@@ -139,7 +141,7 @@ export default function YeetedScreen() {
                 >
                   <MaterialCommunityIcons name="restore" size={24} color="white" />
                   <ThemedText style={styles.bottomButtonText}>
-                    Keep {photosToKeep.size}
+                    Undo {photosToKeep.size}
                   </ThemedText>
                 </TouchableOpacity>
                 <View style={styles.buttonSeparator} />

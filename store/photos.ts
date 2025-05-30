@@ -107,18 +107,47 @@ export const usePhotosStore = create<PhotosState>((set, get) => {
           return handleMediaLibraryError(error, { totalCount: 0, assets: [] });
         });
 
-        const { assets = [] } = await MediaLibrary.getAssetsAsync({
-          mediaType: "photo",
-          first: result.totalCount || 0,
-          sortBy: ["creationTime"],
-        }).catch((error) => {
+        const response = await Promise.race([
+          MediaLibrary.getAssetsAsync({
+            mediaType: "photo",
+            first: result.totalCount || 0,
+            sortBy: ["creationTime"],
+          }),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Timeout")), 5000)
+          ),
+        ]).catch((error) => {
           return handleMediaLibraryError(error, { assets: [] });
         });
 
-        set({ photos: assets, hasLoaded: true });
+        // Load yeeted photos in parallel
+        const albums = await MediaLibrary.getAlbumsAsync().catch((error) =>
+          handleAlbumsError(error)
+        );
+
+        const yeetedAlbum = albums.find(
+          (album) => album.title === YEETED_ALBUM_NAME
+        );
+
+        let yeetedPhotos: PhotoAsset[] = [];
+        if (yeetedAlbum) {
+          const yeetedResult = await MediaLibrary.getAssetsAsync({
+            album: yeetedAlbum.id,
+            mediaType: "photo",
+          }).catch((error) => {
+            return handleMediaLibraryError(error, { assets: [] });
+          });
+          yeetedPhotos = yeetedResult.assets || [];
+        }
+
+        set({
+          photos: (response as any).assets,
+          yeetedPhotos,
+          hasLoaded: true,
+        });
       } catch (error) {
         console.error("Error loading photos:", error);
-        set({ photos: [], hasLoaded: true });
+        set({ photos: [], yeetedPhotos: [], hasLoaded: true });
       } finally {
         hideLoading();
       }
