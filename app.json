@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "KeepOrYeet",
+    "name": "Keep Or Yeet",
     "slug": "keeporyeet",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -47,7 +47,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#000000"
         }
       ],
       [
