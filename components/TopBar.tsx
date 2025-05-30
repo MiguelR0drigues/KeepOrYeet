@@ -1,44 +1,83 @@
 import { useTheme } from '@/hooks/useTheme';
+import { usePhotosStore } from '@/store/photos';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
+import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Logo } from './Logo';
+import { ThemedText } from './ThemedText';
 
 interface TopBarProps {
-  onProfilePress: () => void;
-  onSummaryPress: () => void;
+  variant?: 'main' | 'yeeted';
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
-  onProfilePress,
-  onSummaryPress,
+  variant = 'main'
 }) => {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
+  const { yeetedPhotos } = usePhotosStore();
+  const router = useRouter();
+
+  const handleProfilePress = () => {
+    // TODO: Implement profile screen navigation
+    console.log('Profile pressed');
+  };
+
+  const handleYeetedPress = () => {
+    router.push('/yeeted');
+  };
+
+  const handleBackPress = () => {
+    router.back();
+  };
 
   return (
     <View style={[styles.container, { 
-      backgroundColor: colors.primary,
       paddingTop: insets.top || Constants.statusBarHeight,
     }]}>
       <View style={styles.row}>
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={onProfilePress}
-        >
-          {/* <Ionicons name="person-circle-outline" size={32} color="white" /> */}
-        </TouchableOpacity>
+        {variant === 'main' ? (
+          <>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={handleProfilePress}
+            >
+              {/* <Ionicons name="person-circle-outline" size={32} color="white" /> */}
+            </TouchableOpacity>
 
-        <Logo />
+            <Logo />
 
-        <TouchableOpacity
-          style={styles.summaryButton}
-          onPress={onSummaryPress}
-        >
-          <Ionicons name="stats-chart" size={24} color="white" style={styles.summaryIcon} />
-        </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.yeetedButton}
+              onPress={handleYeetedPress}
+            >
+              <View style={styles.yeetedIconContainer}>
+                <Ionicons name="trash-outline" size={24} color="white" />
+                {yeetedPhotos.length > 0 && (
+                  <View style={[styles.badge, { backgroundColor: colors.yeet }]}>
+                    <ThemedText style={styles.badgeText}>{yeetedPhotos.length}</ThemedText>
+                  </View>
+                )}
+              </View>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={handleBackPress}
+            >
+              <Ionicons name="arrow-back" size={24} color="white" />
+            </TouchableOpacity>
+
+            <ThemedText style={styles.title}>Yeeted Photos</ThemedText>
+
+            <View style={styles.iconButton} />
+          </>
+        )}
       </View>
     </View>
   );
@@ -54,7 +93,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingBottom: 12,
-    height: 60,
+    height: 40,
     width: '100%',
   },
   iconButton: {
@@ -63,18 +102,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  summaryButton: {
-    flexDirection: 'row',
+  yeetedButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 8,
-    borderRadius: 20,
   },
-  summaryIcon: {
-    marginRight: 6,
+  yeetedIconContainer: {
+    position: 'relative',
   },
-  summaryText: {
+  badge: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+  },
+  badgeText: {
     color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
   },
 }); 

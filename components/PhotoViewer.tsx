@@ -1,10 +1,11 @@
-import { useDeviceStorage } from '@/hooks/useDeviceStorage';
+import { usePhotosStore } from '@/store/photos';
 import { PhotoAsset } from '@/types/generic';
+import { SwipeableCardHandle } from '@/types/ui';
 import React, { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ActionButtons } from './ActionButtons';
 import { NoPhotosFound } from './NoPhotosFound';
-import { PhotoCard, PhotoCardHandle } from './PhotoCard';
+import { PhotoCard } from './PhotoCard';
 import { PhotoDetailsSheet } from './PhotoDetailsSheet';
 
 interface PhotoViewerProps {
@@ -12,22 +13,16 @@ interface PhotoViewerProps {
 }
 
 export const PhotoViewer: React.FC<PhotoViewerProps> = ({ photos }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
-  const { moveToYeeted } = useDeviceStorage();
-  const photoCardRef = useRef<PhotoCardHandle>(null);
+  const { currentIndex, yeetPhoto, incrementCurrentIndex } = usePhotosStore();
+  const photoCardRef = useRef<SwipeableCardHandle>(null);
 
   const handleSwipeLeft = async () => {
-    await moveToYeeted([photos[currentIndex].id]);
-    if (currentIndex < photos.length) {
-      setCurrentIndex(prev => prev + 1);
-    }
+    await yeetPhoto(photos[currentIndex].id);
   };
 
   const handleSwipeRight = () => {
-    if (currentIndex < photos.length) {
-      setCurrentIndex(prev => prev + 1);
-    }
+    incrementCurrentIndex();
   };
 
   const handleSwipeUp = () => {
