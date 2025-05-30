@@ -41,7 +41,7 @@ async function createYeetedAlbumIfNeeded(): Promise<string | null> {
   }
 
   const newAlbum = await MediaLibrary.createAlbumAsync(YEETED_ALBUM_NAME);
-  return typeof newAlbum === "string" ? newAlbum : null;
+  return typeof newAlbum.id === "string" ? newAlbum.id : null;
 }
 
 async function ensureYeetedDirectoryExists(): Promise<string> {

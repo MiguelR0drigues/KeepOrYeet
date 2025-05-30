@@ -5,6 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import "react-native-reanimated";
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -17,7 +18,8 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <View style={styles.container}>
           <LinearGradient
             colors={['#000', '#1a0036']}
@@ -30,11 +32,12 @@ export default function RootLayout() {
             headerShown: false,
             contentStyle: { backgroundColor: 'transparent' }
           }}>
-          <Stack.Screen name="index" />
-        </Stack>
-        <StatusBar style="light" />
+            <Stack.Screen name="index" />
+          </Stack>
+          <StatusBar style="light" />
         </View>
-    </GestureHandlerRootView>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
 

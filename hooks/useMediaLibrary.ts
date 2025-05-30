@@ -15,10 +15,16 @@ export function useMediaLibrary(): UseMediaLibraryReturn {
 
   const loadPhotos = async () => {
     try {
+      const { totalCount } = await MediaLibrary.getAssetsAsync({
+        mediaType: "photo",
+      });
+
       const { assets } = await MediaLibrary.getAssetsAsync({
         mediaType: "photo",
+        first: totalCount,
         sortBy: ["creationTime"],
       });
+
       setPhotos(assets);
     } catch (error) {
       console.error("Error loading photos:", error);
